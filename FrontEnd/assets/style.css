@@ -186,3 +186,17 @@ footer nav ul {
 	margin: 2em
 }
 
+.filtres {
+	justify-content: center;
+	align-content: center;
+	margin-bottom: 30px;
+}
+
+.button {
+	width: 100px;
+	height: 38px;
+	background-color: #1D6154;
+	border-radius: 60px;
+	border: #1D6154;
+	color: white;
+}
