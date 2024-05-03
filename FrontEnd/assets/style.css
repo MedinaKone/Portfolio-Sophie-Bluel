@@ -190,10 +190,13 @@ footer nav ul {
 	justify-content: center;
 	align-content: center;
 	margin-bottom: 30px;
+	float: inline-start;
+	display: flex;
+	gap: 10px;
 }
 
 .button {
-	width: 100px;
+	padding: 5px 30px 5px 30px;
 	height: 38px;
 	background-color: #1D6154;
 	border-radius: 60px;
