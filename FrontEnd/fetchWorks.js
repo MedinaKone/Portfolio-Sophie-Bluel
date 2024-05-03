@@ -52,8 +52,11 @@ afficheButton();
 
 
 
-// Fonction asynchrone pour obtenir des données de l'API et afficher les images
-async function afficherImages() {
+
+
+
+
+async function afficherCaptions() {
     try {
         // Récupérer les données de l'API
         const response = await fetch("http://localhost:5678/api/works/");
@@ -71,32 +74,47 @@ async function afficherImages() {
 
         if (!sectionGallery) {
             console.error("Section .gallery introuvable.");
-            return; // Quitter si la section n'existe pas
-        }
-
-        // Vérifier si les données sont un tableau et s'il y a des éléments
-        if (!Array.isArray(imageData) || imageData.length === 0) {
-            console.warn("Aucune image à afficher.");
             return;
         }
 
-        // Parcourir les données pour afficher les images
+        // Vérifier que `imageData` est un tableau
+        if (!Array.isArray(imageData) || imageData.length === 0) {
+            console.warn("Aucune donnée d'image à afficher.");
+            return;
+        }
+
+        // Parcourir les données pour afficher les images et leurs légendes
         for (let i = 0; i < imageData.length; i++) {
-            let imageElement = document.createElement("img"); // Créer un élément image
-            imageElement.src = imageData[i].imageUrl; // Définir la source de l'image avec la propriété `imageUrl`
-            imageElement.alt = `Image ${i + 1}`; // Texte alternatif pour l'accessibilité
+            const imageInfo = imageData[i];
 
-            imageElement.onerror = () => {
-                console.error("Impossible de charger l'image :", imageData[i].imageUrl); // Gérer les erreurs de chargement
-            };
+            // Créer l'élément image
+            const imageElement = document.createElement("img");
+            imageElement.src = imageInfo.imageUrl; // Source de l'image
+            imageElement.alt = imageInfo.title || "Image"; // Texte alternatif
 
-            sectionGallery.appendChild(imageElement); // Ajouter l'image à la section
+            // Créer un élément <figure>
+            const figureElement = document.createElement("figure");
+
+            // Ajouter l'image au <figure>
+            figureElement.appendChild(imageElement);
+            
+            // Créer la légende si nécessaire
+            if (imageInfo.title) {
+                const captionElement = document.createElement("figcaption");
+                captionElement.textContent = imageInfo.title; // Définir le texte de la légende
+
+                figureElement.appendChild(captionElement); // Ajouter la légende au <figure>
+            }
+
+            // Ajouter le <figure> à la galerie
+            sectionGallery.appendChild(figureElement);
         }
     } catch (error) {
-        console.error("Erreur dans afficherImages :", error); // Gérer les erreurs
+        console.error("Erreur dans afficherCaptions :", error); // Gérer les erreurs
     }
 }
 
-// Appel de la fonction pour afficher les images
-afficherImages();
+
+// Appeler la fonction pour afficher les images et les légendes
+afficherCaptions();
 

@@ -203,3 +203,15 @@ footer nav ul {
 	border: #1D6154;
 	color: white;
 }
+
+
+figure {
+    margin: 10px; /* Ajout d'un espacement entre les figures */
+    text-align: center; /* Centrer le texte des légendes */
+}
+
+figcaption {
+    margin-top: 1px; /* Ajout d'un espace entre l'image et la légende */
+    color: #555; /* Couleur du texte de la légende */
+    font-size: 14px; /* Taille de la police pour la légende */
+}
