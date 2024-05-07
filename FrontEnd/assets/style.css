@@ -190,17 +190,24 @@ footer nav ul {
 	justify-content: center;
 	align-content: center;
 	margin-bottom: 30px;
-	float: inline-start;
-	display: flex;
 	gap: 10px;
+	display: flex;
 }
 
 .button {
 	padding: 5px 30px 5px 30px;
 	height: 38px;
-	background-color: #1D6154;
+	background-color: transparent;
 	border-radius: 60px;
-	border: #1D6154;
+	border: solid 1px #1D6154;
+	color: #1D6154;
+	font-size: 16px;
+	font-weight: 700;
+	font-family:'Syne';
+}
+
+.button:hover {
+	background-color: #1D6154;
 	color: white;
 }
 
