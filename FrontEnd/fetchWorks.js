@@ -1,61 +1,5 @@
 const worksEndpoint = 'http://localhost:5678/api/';
 
-// Fonction pour créer un bouton avec un nom donné
-function createButton(name) {
-    const button = document.createElement("button");
-    button.setAttribute("class", "button");
-    button.innerText = name; // Nom affiché sur le bouton
-    return button; // Retourne le bouton créé
-}
-
-// Fonction pour ajouter des boutons au conteneur
-function category(categoryNames) {
-    const sectionGallery = document.querySelector(".gallery");
-    const sectionPortfolio = document.querySelector("#portfolio");
-
-    let divButton = document.createElement("div");
-    divButton.setAttribute("class", "filtres");
-
-    // Créer des boutons pour chaque nom de catégorie
-    categoryNames.forEach((name) => {
-        const button = createButton(name);
-        divButton.appendChild(button); // Ajouter le bouton au div
-    });
-
-    sectionPortfolio.insertBefore(divButton, sectionGallery); // Insérer le conteneur avant la galerie
-}
-
-// Fonction asynchrone pour obtenir les catégories de l'API et créer des boutons
-async function afficheButton() {
-    try {
-        const response = await fetch(worksEndpoint + "categories");
-        if (!response.ok) {
-            throw new Error("Erreur lors de la récupération des catégories");
-        }
-
-        const categories = await response.json(); // Obtenir les données de l'API
-        
-        // Créer un tableau de noms de catégories
-        const categoryNames = categories.map(category => category.name);
-        
-        // Ajouter le bouton "Tous" et d'autres boutons basés sur les catégories
-        category(["Tous", ...categoryNames]); // Ajouter le bouton "Tous" au début du tableau de noms
-        
-    } catch (error) {
-        console.error("Erreur lors de l'affichage des boutons :", error);
-    }
-}
-
-// Appeler la fonction pour afficher les boutons
-afficheButton();
-
-
-
-
-
-
-
-
 async function afficherCaptions() {
     try {
         // Récupérer les données de l'API
@@ -118,3 +62,112 @@ async function afficherCaptions() {
 // Appeler la fonction pour afficher les images et les légendes
 afficherCaptions();
 
+
+
+
+
+function afficherSousCategories() {
+
+const worksEndpoint = "http://localhost:5678/api/categories"
+
+fetch(worksEndpoint)
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`Erreur: ${response.status} - ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        console.log('Données récupérées:', data);
+    })
+    .catch((error) => {
+        console.error('Erreur lors de la récupération des fichiers:', error);
+    });
+
+}
+afficherSousCategories()
+
+
+
+
+
+
+
+// Fonction pour afficher les images par catégorie
+function displayImagesByCategory(imageData, categoryId) {
+    const sectionGallery = document.querySelector('.gallery');
+    sectionGallery.innerHTML = ''; // Vider la galerie avant de réafficher
+
+    const filteredImages = categoryId === 'Tous'
+        ? imageData // Afficher tous les éléments
+        : imageData.filter(image => image.categoryId === categoryId); // Filtrer par `categoryId`
+
+    filteredImages.forEach(image => {
+        const figureElement = document.createElement("figure");
+
+        const imageElement = document.createElement("img");
+        imageElement.src = image.imageUrl;
+        imageElement.alt = image.title || "Image";
+
+        figureElement.appendChild(imageElement);
+
+        if (image.title) {
+            const captionElement = document.createElement("figcaption");
+            captionElement.textContent = image.title;
+            figureElement.appendChild(captionElement);
+        }
+
+        sectionGallery.appendChild(figureElement);
+    });
+}
+
+// Fonction pour créer un bouton avec un gestionnaire d'événements
+function createButton(name, onClick) {
+    const button = document.createElement("button");
+    button.innerText = name; // Nom affiché sur le bouton
+    button.classList.add("button");
+    button.addEventListener("click", onClick); // Ajouter le gestionnaire d'événements
+    return button;
+}
+
+// Fonction asynchrone pour créer les boutons de filtres et afficher les images
+async function createCategoryButtonsAndDisplayImages() {
+    try {
+        const categoryResponse = await fetch(worksEndpoint + 'categories');
+        const worksResponse = await fetch(worksEndpoint + 'works');
+
+        if (!categoryResponse.ok || !worksResponse.ok) {
+            throw new Error('Erreur lors de la récupération des données');
+        }
+
+        const categories = await categoryResponse.json();
+        const imageData = await worksResponse.json();
+
+        const sectionPortfolio = document.querySelector('#portfolio');
+
+        // Créer un conteneur pour les boutons
+        const divButton = document.createElement("div");
+        divButton.setAttribute("class", "filtres");
+
+        // Ajouter le bouton "Tous"
+        const allButton = createButton("Tous", () => displayImagesByCategory(imageData, 'Tous'));
+        divButton.appendChild(allButton);
+
+        // Ajouter des boutons pour chaque catégorie par `id`
+        categories.forEach(category => {
+            const categoryButton = createButton(category.name, () => displayImagesByCategory(imageData, category.id));
+            divButton.appendChild(categoryButton);
+        });
+
+        sectionPortfolio.insertBefore(divButton, document.querySelector('.gallery')); // Ajouter les boutons au portfolio
+
+        // Afficher tous les éléments par défaut ("Tous")
+        displayImagesByCategory(imageData, 'Tous');
+
+    } catch (error) {
+        console.error("Erreur lors de la création des boutons ou de l'affichage des images :", error);
+    }
+}
+
+// Appeler la fonction pour créer les boutons de filtres et afficher les images
+createCategoryButtonsAndDisplayImages();
